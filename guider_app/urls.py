@@ -1,10 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import CityViewSet, StreetViewSet, ShopViewSet
+from .views import CityViewSet, ShopViewSet
 
 router = DefaultRouter()
 router.register(r'city', CityViewSet, basename='city')
-router.register(r'city/(?P<city_id>[^/.]+)/street', StreetViewSet, basename='street')
 router.register(r'shop', ShopViewSet, basename='shop')
 
 urlpatterns = [

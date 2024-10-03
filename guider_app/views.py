@@ -1,22 +1,20 @@
+from django.forms import ValidationError
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import City, Street, Shop
 from .serializers import CitySerializer, StreetSerializer, ShopSerializer
+from rest_framework.decorators import action
+
 
 class CityViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
 
-
-class StreetViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Street.objects.all()
-    serializer_class = StreetSerializer
-
-    def get_queryset(self):
-        city_id = self.kwargs.get('city_id')
-        if city_id:
-            return super().get_queryset().filter(city_id=city_id)
-        return super().get_queryset()
+    @action(detail=True, methods=['get'], url_path='street')
+    def streets(self, request, pk=None):
+        streets = Street.objects.filter(city_id=pk)
+        serializer = StreetSerializer(streets, many=True)
+        return Response(serializer.data)
 
 
 class ShopViewSet(viewsets.ModelViewSet):
